@@ -45,13 +45,7 @@ for step in range(3):
 
     attention_mask = torch.ones(bot_input_ids.shape, device=device)
 
-    chat_history_ids = model.generate(
-        bot_input_ids,
-        attention_mask=attention_mask,
-        max_length=256,
-        num_beams=3,
-        pad_token_id=tokenizer.eos_token_id
-    )
+   
 
     response = tokenizer.decode(
         chat_history_ids[:, bot_input_ids.shape[-1]:][0],
