@@ -22,6 +22,9 @@ chat_history_ids = None
 
 chat_history_ids = None
 
+chat_history_ids = None
+MAX_HISTORY = 512
+
 for step in range(3):
     user_input = input("User: ")
     user_input = "You are an educational chatbot. Answer clearly.\n" + user_input
@@ -37,16 +40,17 @@ for step in range(3):
         else new_input_ids
     )
 
+    if bot_input_ids.shape[-1] > MAX_HISTORY:
+        bot_input_ids = bot_input_ids[:, -MAX_HISTORY:]
+
     attention_mask = torch.ones(bot_input_ids.shape, device=device)
 
     chat_history_ids = model.generate(
         bot_input_ids,
         attention_mask=attention_mask,
-        max_length=1000,
-        pad_token_id=tokenizer.eos_token_id,
-        do_sample=True,
-        top_k=40,
-        top_p=0.9
+        max_length=256,
+        num_beams=3,
+        pad_token_id=tokenizer.eos_token_id
     )
 
     response = tokenizer.decode(
@@ -55,4 +59,5 @@ for step in range(3):
     )
 
     print("Bot:", response)
+
 
